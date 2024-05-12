@@ -1,0 +1,31 @@
+
+redis-cluster-node-0:
+  image: redis:6.x.y-alpine
+  command: redis-server /usr/local/redis/redis.conf
+  networks:
+    - your-local-network
+  ports:
+    - "9079:6379"
+  volumes:
+    - ${PWD}/path/redis_conf_folder:/usr/local/redis
+
+redis-cluster-node-1:
+  image: redis:6.x.y-alpine
+  command: redis-server /usr/local/redis/redis.conf
+  networks:
+    - your-local-network
+  ports:
+    - "9080:6379"
+  volumes:
+    - ${PWD}/path/redis_conf_folder:/usr/local/redis
+
+redis-cluster-configure:
+  image: redis:6.x.y-alpine
+  command: /usr/local/redis/redis-cluster-create.sh
+  networks:
+    - your-local-network
+  depends_on:
+    - redis-cluster-node-0
+    - redis-cluster-node-1
+  volumes:
+    - ${PWD}/path/redis_conf_folder:/usr/local/redis
